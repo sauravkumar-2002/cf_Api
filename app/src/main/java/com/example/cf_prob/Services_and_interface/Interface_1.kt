@@ -9,7 +9,7 @@ import retrofit2.http.GET
 
 interface interface_1 {
     @GET("problemset.problems")
-    fun getDestinationList(): Call<ret_obj>
+     fun getDestinationList(): Call<ret_obj>
 
     companion object service {
         val URL = "https://codeforces.com/api/"
