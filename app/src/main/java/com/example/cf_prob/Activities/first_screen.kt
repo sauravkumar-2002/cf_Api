@@ -22,12 +22,11 @@ class first_screen : AppCompatActivity() {
             this,
             first_screen_factory(this)
         ).get(First_screen_view_model::class.java)
-        var mainActivityViewModel: Main_activity_view_model = ViewModelProvider(
-            this,).get(Main_activity_view_model::class.java)
+
 
 
         binding.firstScreenViewModel = first_screen_view_model
-        binding.mainScreenViewModel=mainActivityViewModel
+
 
 
 

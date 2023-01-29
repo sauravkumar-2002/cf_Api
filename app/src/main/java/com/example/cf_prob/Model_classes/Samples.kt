@@ -4,7 +4,7 @@ object samples {
     val sample=ArrayList<problems>()
     init{
 
-
+/*
         val c1= problems()
         c1.contestId=1;
         c1.index="huihuihuiQ"
@@ -94,6 +94,8 @@ object samples {
         sample.add(c6)
 
 
+
+ */
 
     }
 }

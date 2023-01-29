@@ -10,9 +10,9 @@ import com.example.cf_prob.Model_classes.problems
 
 
 class Adapter() : RecyclerView.Adapter<Adapter.ViewHolder>() {
-     var prob_list= ArrayList<problems>()
-    fun setProblems( prob_list: ArrayList<problems>){
-        this.prob_list=prob_list
+     var prob_list= mutableListOf<problems>()
+    fun setProblems(prob_list: List<problems>){
+        this.prob_list= prob_list as MutableList<problems>
         notifyDataSetChanged()
     }
 
@@ -32,12 +32,12 @@ class Adapter() : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //holder.index.text =
-        holder.contest.text = "Contest:"+prob_list[position].contestId.toString()
-        holder.rating.text = "Rating:"+prob_list[position].rating.toString()
-        holder.prob_name.text = prob_list[position].index+". "+prob_list[position].name
+        holder.contest.text = "Contest:"+ prob_list.get(position).contestId.toString()
+        holder.rating.text = "Rating:"+ prob_list.get(position).rating.toString()
+        holder.prob_name.text = prob_list.get(position).index +". "+ (prob_list.get(position).name)
         var arr:List<String>?
         var tag:String="Use-> "
-        arr=prob_list[position].tags
+     /*arr= prob_list.get(position).tags
         if (arr != null) {
             for(i in 0..arr.size-1){
                tag=tag+arr[i]+","
@@ -45,9 +45,14 @@ class Adapter() : RecyclerView.Adapter<Adapter.ViewHolder>() {
             }
         }
         holder.tags.text=tag
+
+
+      */
+
     }
 
     override fun getItemCount(): Int {
+
         return prob_list.size;
     }
 }

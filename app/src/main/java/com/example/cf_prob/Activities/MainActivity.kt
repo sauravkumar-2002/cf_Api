@@ -11,8 +11,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cf_prob.*
 import com.example.cf_prob.Adapters.Adapter
+import com.example.cf_prob.database.ProblemsDatabase
 import com.example.cf_prob.databinding.ActivityMainBinding
+import com.example.cf_prob.viewModels.Factory.main_activity_factory
+
 import com.example.cf_prob.viewModels.Main_activity_view_model
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -21,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        mainActivityViewModel = ViewModelProvider(this).get(Main_activity_view_model::class.java)
-
+        mainActivityViewModel = ViewModelProvider(this,main_activity_factory(this))
+            .get(Main_activity_view_model::class.java)
 
     }
 
@@ -35,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadProblems() {
 
+
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.recView.layoutManager = layoutManager
@@ -44,21 +51,38 @@ class MainActivity : AppCompatActivity() {
         mainActivityViewModel.prob_list.observe(this, {
             if (it != null) {
                 binding.progressBar.visibility = View.GONE
-
-            binding.progress.visibility = View.GONE
-            Log.i("chec    recv", mainActivityViewModel.ct.toString())
-            adapter.setProblems(it.result.problems)
-        }
-            else{
+                binding.progress.visibility = View.GONE
                 Log.i("chec    recv", mainActivityViewModel.ct.toString())
+                adapter.setProblems(it)
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    var database = ProblemsDatabase.getDatabase(this@MainActivity)
+                    database.comntactDao().delete_complete()
+                    it.forEach { item ->
+                        database.comntactDao().insertContact(item)
+                    }
+
+                }
+
+            } else {
+                Log.i("chec    recv", mainActivityViewModel.ct.toString())
+
             }
         })
         mainActivityViewModel.errorMessage.observe(this, {
             binding.progressBar.visibility = View.GONE
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            binding.progress.visibility = View.GONE
+            Toast.makeText(this,"Eroor due to - "+it.toString()+"\n"+"offline data",Toast.LENGTH_LONG).show()
+
+            var database = ProblemsDatabase.getDatabase(this@MainActivity)
+            database.comntactDao().getContact().observe(this, {
+                Log.i(" database sixze---","sizr "+it.size.toString())
+                adapter.setProblems(it)
+            })
         })
         mainActivityViewModel.getAllProblems()
     }
+
 
     private fun setProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
@@ -73,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                     binding.progress.text = i.toString() + "/" + binding.progressBar.max
                 })
                 try {
-                    Thread.sleep(20)
+                    Thread.sleep(10)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }

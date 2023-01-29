@@ -7,9 +7,7 @@
         <variable
             name="firstScreenViewModel"
             type="com.example.cf_prob.viewModels.First_screen_view_model" />
-        <variable
-            name="mainScreenViewModel"
-            type="com.example.cf_prob.viewModels.Main_activity_view_model" />
+
 
     </data>
 

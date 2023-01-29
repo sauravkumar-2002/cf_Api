@@ -4,6 +4,7 @@ import android.content.Context
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.cf_prob.NetworkUtils.check_internet
 
 
 class First_screen_view_model(context: Context) : ViewModel() {
@@ -11,5 +12,6 @@ class First_screen_view_model(context: Context) : ViewModel() {
     var factLiveData = MutableLiveData<String>("first_screen");
     fun problemSet() {
         factLiveData.value = "go_to_problem_set"
+
     }
 }
